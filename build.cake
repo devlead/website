@@ -7,6 +7,7 @@
 #addin "nuget:https://api.nuget.org/v3/index.json?package=YamlDotNet&version=4.2.1"
 #addin "nuget:https://api.nuget.org/v3/index.json?package=Octokit&version=0.26.0"
 #addin "nuget:https://api.nuget.org/v3/index.json?package=Polly&version=6.1.0"
+#load "./build/cakeusageparser.cake"
 
 using Octokit;
 using Polly;
@@ -165,7 +166,15 @@ Task("GetAddinPackages")
         });
     });
 
+Task("GenerateInput")
+    .Does(context =>
+    {
+        context.WriteAllText("./generatedinput/cake-usage.md",
+            context.ConverCakeUsageToMarkdown());
+    });
+
 Task("Build")
+    .IsDependentOn("GenerateInput")
     .IsDependentOn("GetArtifacts")
     .Does(() =>
     {
@@ -183,6 +192,7 @@ Task("Build")
 
 // Does not download artifacts (run Build or GetArtifacts target first)
 Task("Preview")
+    .IsDependentOn("GenerateInput")
     .IsDependentOn("GetAddinSpecs")
     .Does(() =>
     {
