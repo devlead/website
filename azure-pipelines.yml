@@ -1,0 +1,14 @@
+pool:
+  vmImage: 'windows-2019'
+
+variables:
+  DOTNET_SDK_VERSION: '2.1.602'
+
+steps:
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET Core SDK $(DOTNET_SDK_VERSION)'
+  inputs:
+    version: '$(DOTNET_SDK_VERSION)'
+
+- powershell: './build.ps1'
+  displayName: 'Execute Cake Script'
