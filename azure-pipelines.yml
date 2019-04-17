@@ -10,5 +10,12 @@ steps:
   inputs:
     version: '$(DOTNET_SDK_VERSION)'
 
-- powershell: './build.ps1'
+
+- script: |
+    dotnet tool install -g Cake.Tool
+    dotnet cake build.cake --bootstrap
+    dotnet cake build.cake --target=AzureDevOps
   displayName: 'Execute Cake Script'
+  env:
+    DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1

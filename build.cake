@@ -1,12 +1,11 @@
 #module nuget:?package=Cake.DotNetTool.Module&version=0.2.0
 #tool "dotnet:https://api.nuget.org/v3/index.json?package=Wyam.Tool&version=2.2.4"
 #tool "nuget:https://api.nuget.org/v3/index.json?package=KuduSync.NET&version=1.5.2"
-#tool "nuget:https://api.nuget.org/v3/index.json?package=NuGet.CommandLine&version=4.9.4"
 #addin "nuget:https://api.nuget.org/v3/index.json?package=Cake.Git&version=0.19.0"
-#addin "nuget:https://api.nuget.org/v3/index.json?package=Cake.Kudu&version=0.8.0"
+#addin "nuget:https://api.nuget.org/v3/index.json?package=Cake.Kudu&version=0.9.0"
 #addin "nuget:https://api.nuget.org/v3/index.json?package=Cake.Wyam&version=2.2.4"
 #addin "nuget:https://api.nuget.org/v3/index.json?package=Cake.Yaml&version=3.0.0"
-#addin "nuget:https://api.nuget.org/v3/index.json?package=YamlDotNet&version=5.2.1"
+#addin "nuget:https://api.nuget.org/v3/index.json?package=YamlDotNet&version=6.0.0"
 #addin "nuget:https://api.nuget.org/v3/index.json?package=Octokit&version=0.32.0"
 
 #load "nuget.cake"
@@ -30,7 +29,8 @@ var accessToken         = EnvironmentVariable("git_access_token");
 var deployRemote        = EnvironmentVariable("git_deploy_remote");
 var currentBranch       = isRunningOnAppVeyor ? BuildSystem.AppVeyor.Environment.Repository.Branch : GitBranchCurrent("./").FriendlyName;
 var deployBranch        = string.Concat("publish/", currentBranch);
-var zipFileName         = "output.zip";
+var zipFileName         = MakeAbsolute(File("output.zip"));
+var deployCakeFileName  = MakeAbsolute(File("deploy.cake"));
 
 // Define directories.
 var releaseDir          = Directory("./release");
@@ -256,6 +256,7 @@ Task("UploadArtifacts")
     .Does(() =>
 {
     TFBuild.Commands.UploadArtifact("website", zipFileName, "website");
+    TFBuild.Commands.UploadArtifact("website", deployCakeFileName, "website");
 });
 
 //////////////////////////////////////////////////////////////////////
