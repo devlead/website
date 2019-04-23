@@ -154,6 +154,7 @@ Task("Build")
             Theme = "Samson",
             UpdatePackages = true,
             UseLocalPackages = true,
+            Verbose =true,
             Settings = new Dictionary<string, object>
             {
                 { "AssemblyFiles",  addinSpecs.Where(x => x.Assemblies != null).SelectMany(x => x.Assemblies).Select(x => "../release/addins" + x) }
