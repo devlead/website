@@ -1,5 +1,5 @@
 # Build script
-image: Visual Studio 2015
+image: Visual Studio 2013
 init:
   - git config --global core.autocrlf true
 
